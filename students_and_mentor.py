@@ -120,9 +120,33 @@ def average_mark_lecturers(lecturers_list, course):
     else:
         return 0
 
+print('Проверка к заданию №1:', '====================', sep='\n')
+lecturer = Lecturer('Иван', 'Иванов')
+reviewer = Reviewer('Пётр', 'Петров')
+print(isinstance(lecturer, Mentor)) # True
+print(isinstance(reviewer, Mentor)) # True
+print(lecturer.courses_attached)    # []
+print(reviewer.courses_attached)    # []
 
-# Проверка к задаче
-print('Проверка к задаче:', '====================', sep='\n')
+
+print('Проверка к заданию №2:', '====================', sep='\n')
+lecturer = Lecturer('Иван', 'Иванов')
+reviewer = Reviewer('Пётр', 'Петров')
+student = Student('Алёхина', 'Ольга', 'Ж')
+
+student.courses_in_progress += ['Python', 'Java']
+lecturer.courses_attached += ['Python', 'C++']
+reviewer.courses_attached += ['Python', 'C++']
+
+print(student.rate_lecture(lecturer, 'Python', 7))  # None
+print(student.rate_lecture(lecturer, 'Java', 8))  # Ошибка
+print(student.rate_lecture(lecturer, 'С++', 8))  # Ошибка
+print(student.rate_lecture(reviewer, 'Python', 6))  # Ошибка
+
+print(lecturer.grades)  # {'Python': [7]}
+
+
+print('Проверка к заданию 3,4:', '====================', sep='\n')
 some_reviewer = Reviewer('Some', 'Reviewer')
 some_reviewer.courses_attached += ['Python']
 some_reviewer.courses_attached += ['Java']
