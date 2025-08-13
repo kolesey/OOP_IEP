@@ -9,9 +9,29 @@ class Student:
 
     def rate_lecture(self, lecturer, course, grade):
         if isinstance(lecturer, Lecturer) and course in self.courses_in_progress and course in lecturer.courses_attached:
-            lecturer.grades.setdefault(course, grade)
+            lecturer.grades.setdefault(course, [grade])
         else:
             return 'Ошибка'
+
+    def average_mark(self):
+        if len(self.grades.values()) > 0:
+            all_marks_list = sum(self.grades.values(), [])
+            return round(sum(all_marks_list) / len(all_marks_list), 1)
+        else:
+            return 0
+
+    def __str__(self):
+        return (f'Имя: {self.name}\n'
+                f'Фамилия: {self.surname}\n'
+                f'Средняя оценка за домашние задания: {self.average_mark()}\n'
+                f'Курсы в процессе изучения: {', '.join(set(self.courses_in_progress))}\n'
+                f'Завершенные курсы: {', '.join(set(self.finished_courses))}')
+
+    def __eq__(self, other):
+        return self.average_mark() == other.average_mark()
+
+    def __gt__(self, other):
+        return self.average_mark() > other.average_mark()
 
 
 class Mentor:
@@ -35,12 +55,36 @@ class Lecturer(Mentor):
         super().__init__(name, surname)
         self.grades = {}
 
+    def average_mark(self):
+        if len(list(self.grades.values())) > 0:
+            all_marks_list = sum(self.grades.values(), [])
+            return round(sum(all_marks_list) / len(all_marks_list), 1)
+        else:
+            return 0
+
+    def __str__(self):
+        return (f'Имя: {self.name}\n'
+                f'Фамилия: {self.surname}\n'
+                f'Средняя оценка за лекции: {self.average_mark()}')
+
+    def __eq__(self, other):
+        return self.average_mark() == other.average_mark()
+
+    def __gt__(self, other):
+        return  self.average_mark() > other.average_mark()
+
 
 class Reviewer(Mentor):
     def __init__(self, name, surname):
         super().__init__(name, surname)
 
+    def __str__(self):
+        return (f'Имя: {self.name}\n'
+                f'Фамилия: {self.surname}')
+
+
 # Проверка к задаче №1
+print('Проверка к задаче №1:', '====================', sep='\n')
 lecturer = Lecturer('Иван', 'Иванов')
 reviewer = Reviewer('Пётр', 'Петров')
 print(isinstance(lecturer, Mentor)) # True
@@ -49,6 +93,7 @@ print(lecturer.courses_attached)    # []
 print(reviewer.courses_attached)    # []
 
 # Проверка к задаче №2
+print('Проверка к задаче №2:', '====================', sep='\n')
 student = Student('Алёхина', 'Ольга', 'Ж')
 student.courses_in_progress += ['Python', 'Java']
 lecturer.courses_attached += ['Python', 'C++']
@@ -59,4 +104,45 @@ print(student.rate_lecture(lecturer, 'Java', 8))     # Ошибка
 print(student.rate_lecture(lecturer, 'С++', 8))      # Ошибка
 print(student.rate_lecture(reviewer, 'Python', 6))   # Ошибка
 
-print(lecturer.grades)  # {'Python': [7]}  
+print(lecturer.grades)  # {'Python': [7]}
+
+# Проверка к задаче №3, 4
+print('Проверка к задаче №3, 4:', '====================', sep='\n')
+some_reviewer = Reviewer('Some', 'Reviewer')
+some_reviewer.courses_attached += ['Python']
+some_reviewer.courses_attached += ['Java']
+print(some_reviewer, end='\n\n')
+
+some_student = Student('Some', 'Student', 'М')
+some_student.courses_in_progress += ['Python', 'Java']
+some_student.finished_courses += ['Введение в программирование']
+some_reviewer.rate_hw(some_student, 'Python', 8)
+some_reviewer.rate_hw(some_student, 'Java', 10)
+some_student_1 = Student('Other', 'Student', 'Ж')
+some_student_1.courses_in_progress += ['Python']
+some_reviewer.rate_hw(some_student_1, 'Python', 8)
+print(some_student, end='\n\n')
+print(some_student_1, end='\n\n')
+print(some_student == some_student_1, end='\n\n')
+print(some_student > some_student_1, end='\n\n')
+print(some_student < some_student_1, end='\n\n')
+
+some_lecturer = Lecturer('Some', 'Lecturer')
+some_lecturer.courses_attached += ['Python', 'Java']
+some_lecturer_1 = Lecturer('Other', 'Lecturer')
+some_lecturer_1.courses_attached += ['Python']
+some_lecturer_2 = Lecturer('Another', 'Lecturer')
+some_lecturer_2.courses_attached += ['Java']
+some_student.rate_lecture(some_lecturer, 'Python', 10)
+some_student.rate_lecture(some_lecturer, 'Java', 4)
+some_student.rate_lecture(some_lecturer_1, 'Python', 8)
+
+print(some_lecturer, end='\n\n')
+print(some_lecturer_1, end='\n\n')
+
+print(some_lecturer == some_lecturer_1, end='\n\n')
+print(some_lecturer > some_lecturer_2, end='\n\n')
+print(some_student < some_student_1, end='\n\n')
+
+
+
