@@ -83,40 +83,58 @@ class Reviewer(Mentor):
                 f'Фамилия: {self.surname}')
 
 
-# Проверка к задаче №1
-print('Проверка к задаче №1:', '====================', sep='\n')
-lecturer = Lecturer('Иван', 'Иванов')
-reviewer = Reviewer('Пётр', 'Петров')
-print(isinstance(lecturer, Mentor)) # True
-print(isinstance(reviewer, Mentor)) # True
-print(lecturer.courses_attached)    # []
-print(reviewer.courses_attached)    # []
+def average_mark_students(students_list, course):
+    """
+    Function count average mark of list of students
+    :param students_list: list of students
+    :param course: course name
+    :return: average mark
+    """
+    marks_list = []
+    for student in students_list:
+        if isinstance(student, Student) and course in student.courses_in_progress:
+            marks_list.append(student.grades.get(course))
+    if len(marks_list) > 0:
+        all_marks_list = sum(marks_list, [])
+        return round(sum(all_marks_list) / len(all_marks_list), 1)
+    else:
+        return 0
 
-# Проверка к задаче №2
-print('Проверка к задаче №2:', '====================', sep='\n')
-student = Student('Алёхина', 'Ольга', 'Ж')
-student.courses_in_progress += ['Python', 'Java']
-lecturer.courses_attached += ['Python', 'C++']
-reviewer.courses_attached += ['Python', 'C++']
 
-print(student.rate_lecture(lecturer, 'Python', 7))   # None
-print(student.rate_lecture(lecturer, 'Java', 8))     # Ошибка
-print(student.rate_lecture(lecturer, 'С++', 8))      # Ошибка
-print(student.rate_lecture(reviewer, 'Python', 6))   # Ошибка
+def average_mark_lecturers(lecturers_list, course):
+    """
+    Function count average mark of list of lecturers
+    :param lecturers_list: list of lecturers
+    :param course: course name
+    :return: average mark
+    """
+    marks_list = []
 
-print(lecturer.grades)  # {'Python': [7]}
+    for lecturer in lecturers_list:
+        if isinstance(lecturer, Lecturer) and course in lecturer.courses_attached:
+            marks_list.append(lecturer.grades.get(course))
 
-# Проверка к задаче №3, 4
-print('Проверка к задаче №3, 4:', '====================', sep='\n')
+    if len(marks_list) > 0:
+        all_marks_list = sum(marks_list, [])
+        return round(sum(all_marks_list) / len(all_marks_list), 1)
+    else:
+        return 0
+
+
+# Проверка к задаче
+print('Проверка к задаче:', '====================', sep='\n')
 some_reviewer = Reviewer('Some', 'Reviewer')
 some_reviewer.courses_attached += ['Python']
 some_reviewer.courses_attached += ['Java']
+some_reviewer_1 = Reviewer('Other', 'Reviewer')
 print(some_reviewer, end='\n\n')
+print(some_reviewer_1, end='\n\n')
 
 some_student = Student('Some', 'Student', 'М')
 some_student.courses_in_progress += ['Python', 'Java']
 some_student.finished_courses += ['Введение в программирование']
 some_reviewer.rate_hw(some_student, 'Python', 8)
+some_reviewer.rate_hw(some_student, 'Python', 3)
 some_reviewer.rate_hw(some_student, 'Java', 10)
 some_student_1 = Student('Other', 'Student', 'Ж')
 some_student_1.courses_in_progress += ['Python']
@@ -144,5 +162,8 @@ print(some_lecturer == some_lecturer_1, end='\n\n')
 print(some_lecturer > some_lecturer_2, end='\n\n')
 print(some_student < some_student_1, end='\n\n')
 
+students_list = [some_student, some_student_1]
+print(average_mark_students(students_list, 'Python'))
 
-
+lecturers_list = [some_lecturer,some_lecturer_1, some_lecturer_2]
+print(average_mark_lecturers(lecturers_list, 'Python'))
